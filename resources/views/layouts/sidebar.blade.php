@@ -3,7 +3,7 @@
     use App\Models\Booking;
     $user = \Auth::user();
     $languages = Utility::languages();
-    $role_id = $user->roles->first()->id;
+    // $role_id = $user->roles->first()->id;
     $user_id = $user->id;
     $forms = Form::all();
     $all_forms = Form::all();
@@ -18,6 +18,18 @@
         </div>
         <div class="navbar-content">
             <ul class="dash-navbar d-block">
+                <li class="dash-item dash-hasmenu {{ request()->is('dependencies*', 'design*') ? 'active' : '' }}">
+                    <a href="{{ route('dependencies.index') }}" class="dash-link"><span class="dash-micon"><i
+                                class="ti ti-home"></i></span>
+                        <span class="dash-mtext custom-weight">{{ __('Dependencias') }}</span></a>
+                </li>
+
+                <li class="dash-item dash-hasmenu {{ request()->is('departments*', 'design*') ? 'active' : '' }}">
+                    <a href="{{ route('departments.index') }}" class="dash-link"><span class="dash-micon"><i
+                                class="ti ti-home"></i></span>
+                        <span class="dash-mtext custom-weight">{{ __('Departamentos') }}</span></a>
+                </li>
+
                 <li class="dash-item dash-hasmenu {{ request()->is('forms*', 'design*') ? 'active' : '' }}">
                     <a href="{{ route('forms.index') }}" class="dash-link"><span class="dash-micon"><i
                                 class="ti ti-home"></i></span>

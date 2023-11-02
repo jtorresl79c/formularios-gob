@@ -49,11 +49,13 @@
                             <div class="col-lg-6">
                                     <div class="form-group">
                                         <label for="">Dependencia</label>
-                                        <select class="form-select" name="selectDependencia">
-                                        <option value="">Selecciona una opción</option>
-                                        <option value="DSPM">DSPM</option>
-                                        <option value="DOIUM">DOIUM</option>
-                                        <option value="TEST">TEST</option>
+                                        <select class="form-select" name="selectDependencia" id="selectDependencia">
+                                        <option selected disabled value="">Selecciona una opción</option>
+
+                                            @foreach ($dependencies as $dependency)
+                                                <option onclick="setOptions({{$dependency->departments}})" value="{{$dependency->id}}">{{$dependency->name}}</option>
+                                            @endforeach
+
                                         </select>
                                 </div>
                             </div>
@@ -61,10 +63,8 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                         <label for="">Departamento</label>
-                                        <select class="form-select" name="selectDepartamento">
-                                        <option value="">Selecciona una opción</option>
-                                        <option value="area 1">Area 1</option>
-                                        <option value="area 2">Area 2</option>
+                                        <select class="form-select" name="selectDepartamento" id="selectDepartamento" disabled>
+                                            <option disabled selected>Selecciona una opción</option>
                                         </select>
                                     </div>
                             </div>
@@ -146,6 +146,41 @@
 @push('style')
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/daterangepicker/daterangepicker.css') }}" />
     <link href="{{ asset('vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}" rel="stylesheet" />
+@endpush
+@push('script')
+<script>
+
+    let selectedDepartments = document.getElementById('selectDepartamento')
+    let selectDependencia = document.getElementById('selectDependencia')
+
+    function removeOptions(selectElement) {
+        var i, L = selectElement.options.length - 1;
+        for(i = L; i >= 0; i--) {
+            selectElement.remove(i);
+        }
+    }
+    
+    removeOptions(selectedDepartments)
+    selectedDepartments.disabled = true
+    selectDependencia.value = ""
+
+
+    function setOptions(options){
+        console.log(options)
+        // let selected = document.getElementById('selectDepartamento')
+        removeOptions(selectedDepartments);
+
+        let option
+        options.forEach(option => {
+            createdOption = document.createElement("option")
+            createdOption.text = option.name
+            createdOption.value = option.id
+            selectedDepartments.add(createdOption)
+        })
+
+        selectedDepartments.removeAttribute("disabled");
+    }
+</script>
 @endpush
 @push('script')
     <script src="{{ asset('vendor/moment.min.js') }}"></script>

@@ -12,11 +12,11 @@
     $data = null;
     $type = '';
   
-    if ($user) {
-        $roleId = Role::where('name', $user->getRoleNames())->first();
-        $type = $roleId->name;
+    // if ($user) {
+    //     $roleId = Role::where('name', $user->getRoleNames())->first();
+    //     $type = $roleId->name;
         $data = 'public';
-    }
+    // }
 @endphp
 @if ($data !== null)
     <div class="section-body">

@@ -42,9 +42,9 @@ class FormsDataTable extends DataTable
     }
     public function query(Form $model)
     {
-        $usr = \Auth::user();
-        $role_id = $usr->roles->first()->id;
-        $user_id = $usr->id;
+        // $usr = \Auth::user();
+        // $role_id = $usr->roles->first()->id;
+        // $user_id = $usr->id;
         return $model->newQuery();
     }
 

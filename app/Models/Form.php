@@ -33,6 +33,10 @@ class Form extends Model
         return json_decode($this->json);
     }
 
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
+
     public function Roles()
     {
         return $this->belongsToMany('Spatie\Permission\Models\Role', 'user_forms', 'form_id', 'role_id');
