@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\TarimaController;
-use App\Http\Controllers\Api\AppController;
+// use App\Http\Controllers\Api\TarimaController;
+// use App\Http\Controllers\Api\AppController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,8 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/remision/getall', [AppController::class, 'getall'])->name('api.remision.getall');
+// Route::get('/remision/getall', [AppController::class, 'getall'])->name('api.remision.getall');
 
-Route::post('/tarima/calculos', [TarimaController::class, 'calculos'])->name('api.tarima.calculos');
-Route::get('/tarima/getcajas', [TarimaController::class, 'getcajas'])->name('api.tarima.getcajas');
-Route::apiResource('tarima', TarimaController::class);
+// Route::post('/tarima/calculos', [TarimaController::class, 'calculos'])->name('api.tarima.calculos');
+// Route::get('/tarima/getcajas', [TarimaController::class, 'getcajas'])->name('api.tarima.getcajas');
+// Route::apiResource('tarima', TarimaController::class);

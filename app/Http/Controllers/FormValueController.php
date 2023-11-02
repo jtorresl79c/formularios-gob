@@ -54,7 +54,7 @@ class FormValueController extends Controller
     public function edit($id)
     {
         $usr = \Auth::user();
-        $user_role = $usr->roles->first()->id;
+        // $user_role = $usr->roles->first()->id;
         $form_value = FormValue::find($id);
    
         $array = json_decode($form_value->json);

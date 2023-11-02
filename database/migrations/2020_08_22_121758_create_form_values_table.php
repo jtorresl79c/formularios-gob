@@ -16,6 +16,7 @@ class CreateFormValuesTable extends Migration
         Schema::create('form_values', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('form_id');
+            $table->foreign('form_id')->references('id')->on('forms');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->text('json');
             $table->timestamps();

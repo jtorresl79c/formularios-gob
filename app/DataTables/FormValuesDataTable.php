@@ -116,8 +116,8 @@ class FormValuesDataTable extends DataTable
     public function query(FormValue $model, Request $request)
     {
         $usr = \Auth::user();
-        $role_id = $usr->roles->first()->id;
-        $user_id = $usr->id;
+        // $role_id = $usr->roles->first()->id;
+        // $user_id = $usr->id;
  
         $form_values = FormValue::select(['form_values.*', 'forms.title'])
             ->join('forms', 'forms.id', '=', 'form_values.form_id')

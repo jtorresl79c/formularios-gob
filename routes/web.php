@@ -6,6 +6,9 @@ use App\Http\Controllers\ConexionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FormValueController;
 
+use App\Http\Controllers\DependenciesController;
+use App\Http\Controllers\DepartmentsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,6 +33,8 @@ Route::post('/obtener-datos', [ConexionController::class, 'obtenerDatos']);
 
 
 Route::resource('forms', FormController::class)->except(['show']);
+Route::resource('dependencies', DependenciesController::class);
+Route::resource('departments', DepartmentsController::class);
 Route::get('/forms/fill/{id}', [FormController::class, 'fill'])->name('forms.fill')->middleware(['auth']);
 Route::post('ckeditors/upload', [FormController::class, 'ckupload'])->name('ckeditors.upload')->middleware(['auth']);
 Route::post('dropzone/upload/{id}', [FormController::class, 'dropzone'])->name('dropzone.upload')->middleware(['Setting']);

@@ -16,6 +16,8 @@ use App\Models\FormIntegrationSetting;
 use App\Models\FormValue;
 use App\Models\User;
 use App\Models\UserForm;
+use App\Models\Department;
+use App\Models\Dependency;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
@@ -57,7 +59,9 @@ class FormController extends Controller
       /*   if (\Auth::user()->can('create-form')) { */
             $users = User::where('id', '!=', 1)->pluck('name', 'id');
             $roles = Role::where('name', '!=', 'Super Admin')->orwhere('name', Auth::user()->type)->pluck('name', 'id');
-            return view('form.create', compact('roles', 'users'));
+            $dependencies = Dependency::with('departments')->get();
+            // return $dependencies;
+            return view('form.create', compact('roles', 'users', 'dependencies'));
        /*  } else {
             return response()->json(['failed' => __('Permission denied.')], 401);
         } */
@@ -100,9 +104,18 @@ class FormController extends Controller
                 $set_end_date_time = null;
             }
 
-            $dep = strtolower(trim(str_replace(' ','_',$request->selectDependencia)));
-            $depto = strtolower(trim(str_replace(' ','_',$request->selectDepartamento)));
+            $dependency = Dependency::find($request->selectDependencia);
+            $department = Department::find($request->selectDepartamento);
+
+            // return $department;
+
+            // $dep = strtolower(trim(str_replace(' ','_',$request->selectDependencia)));
+            // $depto = strtolower(trim(str_replace(' ','_',$request->selectDepartamento)));
+            $dep = $dependency->name;
+            $depto = $department->name;
             $titulo = trim(str_replace(' ','_',$request->title));
+
+
             // Set the configuration to connect to the "cluster" database
             $clusterConfig = config('database.connections.pgsql2');
             $clusterConfig['database'] = 'cluster';
@@ -146,6 +159,7 @@ class FormController extends Controller
             $bd->statement($createTableQuery);
             }
             $form = new Form();
+            $form->department_id = $department->id;
             $form->title  = $request->title;
             $form->logo  = $filename;
             $form->description  = $request->form_description;
@@ -168,7 +182,7 @@ class FormController extends Controller
     public function edit($id)
     {
         $usr = \Auth::user();
-        $user_role = $usr->roles->first()->id;
+        // $user_role = $usr->roles->first()->id;
       /*   $formallowededit = UserForm::where('role_id', $user_role)->where('form_id', $id)->count(); */
         
       /*   if (\Auth::user()->can('edit-form') && $usr->type == 'Admin') {
@@ -415,6 +429,11 @@ class FormController extends Controller
 
     public function fillStore(Request $request, $id)
     {
+        // $connection = \DB::connection()->getDatabaseName();
+        // dd($connection);
+
+
+        // return $connection;
         // dd($request->all());
 
         // if (UtilityFacades::getsettings('captcha_enable') == 'on') {
@@ -457,8 +476,8 @@ class FormController extends Controller
             ]);
             // return back()->with('failed',  __('Please check recaptcha.'))->withInput();
         } else {
-            $form = Form::find($id);
-
+            $form = Form::with('department.dependency')->get()->find($id);
+            
             if ($form) {
                 $client_emails = [];
                 if ($request->form_value_id) {
@@ -467,6 +486,28 @@ class FormController extends Controller
                 } else {
                     $array = $form->getFormArray();
                 }
+
+
+
+
+                $departmentName = $form->department->name;
+                $dependencyName = $form->department->dependency->name;
+                $tableName = strtolower(trim(str_replace(' ','_',$form->title)));
+
+                // return $tableName;
+    
+                DB::purge('pgsql2');
+                $databaseConfig = config('database.connections.pgsql2');
+                $databaseConfig['database'] = $dependencyName;
+                config(['database.connections.pgsql2' => $databaseConfig]);
+                $bd = DB::connection('pgsql2');
+    
+                $jsonArray = json_encode($array);
+                // return $jsonArray;
+                $insertRow = "INSERT INTO $departmentName.$tableName(form_id, user_id, json) VALUES ($form->id,1,'$jsonArray')";
+                $bd->statement($insertRow);
+
+
 
                 foreach ($array as  &$rows) {
                     foreach ($rows as &$row) {
@@ -812,7 +853,6 @@ class FormController extends Controller
 
                     $data['json']    = json_encode($array);
                     $form_value = FormValue::create($data);
-
                 }
 
                 $form_valuearray = json_decode($form_value->json);
